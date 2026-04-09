@@ -1,9 +1,16 @@
+#include <Servo.h>
+Servo myServo;
+
+int const potPin = A0;
+int potVal;
+int angle;
+
 const int controlPin1 = 2;
 const int controlPin2 = 3;
 const int enablePin = 9;
 const int directionSwitchPin = 4;
 const int onOffSwitchStateSwitchPin = 5;
-const int potPin = A0;
+//const int potPin = A0;
 
 int onOffSwitchState = 0;
 int previousOnOffSwitchState = 0;
@@ -15,15 +22,31 @@ int motorSpeed = 0;
 int motorDirection = 1;
 
 void setup() {
+  myServo.attach(9);
+  Serial.begin(9600);
+
+  /*
   pinMode(directionSwitchPin, INPUT);
   pinMode(onOffSwitchStateSwitchPin, INPUT);
   pinMode(controlPin1, OUTPUT);
   pinMode(controlPin2, OUTPUT);
   pinMode(enablePin, OUTPUT);
   digitalWrite(enablePin, LOW);
+  */
 }
 
 void loop() {
+
+  //code for servo
+  potVal = analogRead(potPin);
+  Serial.print("potVal: ");
+  Serial.print(potVal);
+  angle = map(potVal, 0, 1023, 0, 179);
+  Serial.print(", angle: ");
+  Serial.println(angle);
+  myServo.write(angle);
+  delay(15);
+  /*
   // put your main code here, to run repeatedly:
   onOffSwitchState = digitalRead(onOffSwitchStateSwitchPin);
   delay(1);
@@ -60,4 +83,5 @@ void loop() {
 
   previousDirectionSwitchState = directionSwitchState;
   previousOnOffSwitchState = onOffSwitchState;
+  */
 }//end loop
