@@ -12,17 +12,21 @@ public class Capacitor : CircuitComponent
 
      void Start()
     {
+        slider.maxValue = maxCapacity;
         slider.value = 0;
     }
 
     protected override void updateComponent()
     {
-        //update the capacity
+        //update the slider UI
         if(slider.value != powerCapacity) slider.value = powerCapacity;
 
         if(hasPower)
         {
-            powerCapacity += chargeSpeed * Time.deltaTime;
+            //increase the amount of charge being held on the capacitor
+            powerCapacity = Mathf.Clamp((chargeSpeed * Time.deltaTime)+powerCapacity, 0, maxCapacity);
+
+            //check to see if we hit the max charge
             if(maxCapacity <= powerCapacity)
             {
                 overPower = true;
