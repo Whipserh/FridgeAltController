@@ -7,7 +7,8 @@ public class CircuitComponent : MonoBehaviour
     public bool hasPower, overPower;
     private float timer;
     protected float overloadCoolDown = 3;
-    public CircuitComponent[] nextComponents; 
+    public CircuitComponent[] nextComponents;
+    public float voltage;
 
     
     void Start()
