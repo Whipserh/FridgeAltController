@@ -41,7 +41,7 @@ int thermometerAngle;
 
 //fan component variables
 const int enablePin = 4;
-const int controlPin1 = 2;
+const int controlPin1 = 2; // controll pins handle which direction the motor is moving
 const int controlPin2 = 3;
 
 int motorEnabled = 0;
@@ -70,6 +70,9 @@ void setup() {
 
   //set the motor to Off
   digitalWrite(enablePin, LOW);
+  //set the direction of the motor
+  digitalWrite(controlPin1, HIGH);
+  digitalWrite(controlPin2, LOW);
 
   //comunicate to unity project
   Serial.begin(115200);
@@ -82,15 +85,26 @@ void controlMotorSpeed(bool enableMotor, int motorSpeed) {
   else digitalWrite(enablePin, LOW);
 
   //set speed of motor
+  if (motorEnabled == 1) {
+    analogWrite(enablePin, motorSpeed);
+  }
+  else {
+    analogWrite(enablePin, 0);
+  }
 }
 
 //write to data packet
+//value of each input
 private void sendDataPacket() {
-  string a = "{";
+  string data = "{";
 }
 
 //reads from unity program
 private void readDataPacket() {
+  //things that need to be read from the data packet:
+  // - thermometer value/angle
+  // - power of fan
+  // - angle of fan
   //thermometerVal = ;
 }
 
@@ -109,11 +123,12 @@ void loop() {
   //read curcuit board inputs
   readCircuitInput();
 
-  //write the angle and send it too the thing
-  angle = map(potVal, 0, 1023, 0, 179);//lerp function from 0-1023 to total range of 0-180 degrees
-  myServo.write(angle);
-  delay(15);
+  //collect the variables from the board and send it to unity
+  sendDataPacket();
 
+  //recieve the data packet that was sent from the unity
+  readDataPacket();
+  
   //update thermometer
   thermometerAngle = map(thermometerVal, 0, 2, 0, 179);
   thermoServo.write(thermometerAngle);
@@ -122,48 +137,7 @@ void loop() {
 
   //update Fan turner controls
   fanServo.write(fanAngle);  
-  /*
-  // put your main code here, to run repeatedly:
-  onOffSwitchState = digitalRead(onOffSwitchStateSwitchPin);
-  delay(1);
-  directionSwitchState = digitalRead(directionSwitchPin);
 
-  //reads pot to set speed of motor
-  motorSpeed = analogRead(potPin)/4;
-
-  if(onOffSwitchState != previousOnOffSwitchState){
-    if(onOffSwitchState == HIGH){
-      motorEnabled = !motorEnabled;
-    }
-  }
-
-  if (directionSwitchState != previousDirectionSwitchState) {
-    if (directionSwitchState == HIGH) {
-     motorDirection = !motorDirection;
-    }
-  }
-
-  if (motorDirection == 1) {
-    digitalWrite(controlPin1, HIGH);
-    digitalWrite(controlPin2, LOW);
-  }
-  else {
-    digitalWrite(controlPin1, LOW);
-    digitalWrite(controlPin2, HIGH);
-  }
-
-  if (motorEnabled == 1) {
-    analogWrite(enablePin, motorSpeed);
-  }
-  else {
-    analogWrite(enablePin, 0);
-  }
-
-  previousDirectionSwitchState = directionSwitchState;
-  previousOnOffSwitchState = onOffSwitchState;
-  */
   previousLeftSwitchState = leftSwitchState;
   previousRightSwitchState = rightSwitchState;
-
-
 }  //end loop
