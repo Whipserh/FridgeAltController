@@ -6,10 +6,16 @@ const int potPin = A0;
 const int pot2Pin = A1;
 const int sliderPot = A2;
 const int slider2Pot = A3;
+
 int potVal;
 int pot2Val;
 int sliderVal;
 int slider2Val;
+int previousPotVal;
+int previousPot2Val;
+int previousSliderVal;
+int previousSlider2Val;
+
 
 
 const int ledPin = 13;
@@ -76,16 +82,17 @@ void setup() {
 
   //comunicate to unity project
   Serial.begin(115200);
+  
+
 }
 
-private
-void controlMotorSpeed(bool enableMotor, int motorSpeed) {
+void controlMotorSpeed(int motorSpeed) {
   //turn motor on/off
-  if (enableMotor) digitalWrite(enablePin, HIGH);
+  if (motorEnabled == 1) digitalWrite(enablePin, HIGH);
   else digitalWrite(enablePin, LOW);
 
   //set speed of motor
-  if (motorEnabled == 1) {
+  if (motorEnabled == true) {
     analogWrite(enablePin, motorSpeed);
   }
   else {
@@ -93,14 +100,42 @@ void controlMotorSpeed(bool enableMotor, int motorSpeed) {
   }
 }
 
-//write to data packet
-//value of each input
-private void sendDataPacket() {
-  string data = "{";
+//DONE
+void sendDataPacket() {
+  //-----------------------------------------------------------------------------FAN BUTTONS
+  //if the state of the button changes then send an info update
+  if(previousLeftSwitchState != leftSwitchState)
+    if(leftSwitchState == LOW)
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"DOWN\"}");
+      else 
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"UP\"}"); 
+  if(previousRightSwitchState != rightSwitchState)
+      if(rightSwitchState == LOW)
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"DOWN\"}");
+      else 
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"UP\"}"); 
+  //-----------------------------------------------------------------------------CIRCUIT DIALS
+  if(previousPotVal != potVal)
+    Serial.print("{\"command\":\"POT1\", \"state\":\"");
+    Serial.print(potVal);
+    Serial.println("\"}"); 
+  if(previousPot2Val != pot2Val)
+    Serial.print("{\"command\":\"POT2\", \"state\":\"");
+    Serial.print(pot2Val);
+    Serial.println("\"}"); 
+  if(previousSliderVal != sliderVal)
+    Serial.print("{\"command\":\"SLIDER1\", \"state\":\"");
+    Serial.print(sliderVal);
+    Serial.println("\"}"); 
+  if(previousSlider2Val != slider2Val)
+    Serial.print("{\"command\":\"POT1\", \"state\":\"");
+    Serial.print(slider2Val);
+    Serial.println("\"}"); 
 }
 
+
 //reads from unity program
-private void readDataPacket() {
+void readDataPacket() {
   //things that need to be read from the data packet:
   // - thermometer value/angle
   // - power of fan
@@ -108,13 +143,28 @@ private void readDataPacket() {
   //thermometerVal = ;
 }
 
-private void readCircuitInput(){
+//DONE
+void readCircuitInput(){
   potVal = analogRead(potPin);
   pot2Val = analogRead(pot2Pin);
   sliderVal = analogRead(sliderPot);
   slider2Val = analogRead(slider2Pot);
 }
 
+//DONE
+void updatePreviousVariables(){
+  //fan controls
+  previousLeftSwitchState = leftSwitchState;
+  previousRightSwitchState = rightSwitchState;
+
+  //circuit controls
+  previousPotVal = potVal;
+  previousPot2Val = pot2Val;
+  previousSliderVal = sliderVal;
+  previousSlider2Val = slider2Val;
+}
+
+//TODO: add led to items otherwise DONE
 void loop() {
   //read the state of the left/right control switch states
   leftSwitchState = digitalRead(leftSwitchPin);
@@ -129,15 +179,18 @@ void loop() {
   //recieve the data packet that was sent from the unity
   readDataPacket();
   
+
+  //------------------------------------------------------------------------------------OUTPUT
   //update thermometer
   thermometerAngle = map(thermometerVal, 0, 2, 0, 179);
   thermoServo.write(thermometerAngle);
   //update motor controls
-  controlMotorSpeed(enableMotor, motorSpeed);
+  controlMotorSpeed(motorSpeed);
 
   //update Fan turner controls
   fanServo.write(fanAngle);  
-
-  previousLeftSwitchState = leftSwitchState;
-  previousRightSwitchState = rightSwitchState;
+  //------------------------------------------------------------------------------------
+  
 }  //end loop
+
+
