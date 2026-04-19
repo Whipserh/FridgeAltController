@@ -1,5 +1,5 @@
 #include <Servo.h>
-
+#include <string.h>
 
 //circuit board component variablles
 const int potPin = A0;
@@ -141,6 +141,25 @@ void readDataPacket() {
   // - power of fan
   // - angle of fan
   //thermometerVal = ;
+  //read the line
+  String line = Serial.readString();
+  if(line.equals("")) return;
+  //seperate the first number from the rest of the string
+  thermometerVal = atoi(line.substring(0, line.indexOf(',')).c_str());
+  
+  //remove the first number off the list and skip the comma
+  line = line.substring(line.indexOf(',')+1);
+
+  //get the second number from the list
+  fanAngle = atoi(line.substring(0, line.indexOf(',')).c_str());
+  line = line.substring(line.indexOf(',')+1);
+
+
+  motorSpeed = atoi(line.c_str());
+
+  Serial.println(thermometerVal);
+  Serial.println(fanAngle);
+  Serial.println(motorSpeed);
 }
 
 //DONE
