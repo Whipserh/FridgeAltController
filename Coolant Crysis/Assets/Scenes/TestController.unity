@@ -846,12 +846,12 @@ MonoBehaviour:
   dial2: 10
   slider1: 10
   slider2: 10
-  left: 1
-  right: 1
-  fanPower: 0
-  fanAngle: 0
-  thermometerAngle: 0
+  left: 0
+  right: 0
   serialPortManager: {fileID: 552737398}
+  newTA: 0
+  newFA: 0
+  newFP: 0
 --- !u!4 &552737397
 Transform:
   m_ObjectHideFlags: 0
