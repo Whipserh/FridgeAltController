@@ -133,7 +133,7 @@ void sendDataPacket() {
     Serial.println("\"}"); 
 }
 
-
+//DONE
 //reads from unity program
 void readDataPacket() {
   //things that need to be read from the data packet:
@@ -143,11 +143,10 @@ void readDataPacket() {
   //thermometerVal = ;
   //read the line
   String line = Serial.readString();
-  if(line.equals("")) return;
+  if(line.equals("")) return; //if there is nothing there then don't update the variables
+
   //seperate the first number from the rest of the string
   thermometerVal = atoi(line.substring(0, line.indexOf(',')).c_str());
-  
-  //remove the first number off the list and skip the comma
   line = line.substring(line.indexOf(',')+1);
 
   //get the second number from the list

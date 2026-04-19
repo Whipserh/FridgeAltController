@@ -12,21 +12,38 @@ public class CircuitManager : MonoBehaviour
     public float dial1, dial2, slider1, slider2;
     public bool left, right;
     public float fanPower, fanAngle, thermometerAngle;
+    public SerialPortManager serialPortManager;
 
-
-    
     void Update()
     {
+
         sendResult();
         displayControllerInfo();
     }
     
-    public void updateValues(float dialA, float dialB, float sliderA, float sliderB)
+
+    //TODO
+    public void updateValues(string command, string value)
     {
-        dial1 = dialA;
-        dial2 = dialB;
-        slider1 = sliderA;
-        slider2 = sliderB;
+        switch (command) {
+            case "POT1":
+                dial1 = int.Parse(value);
+                break;
+            case "POT2":
+                dial2 = int.Parse(value);
+                break;
+            case "SLIDER1":
+                slider1 = int.Parse(value);
+                break;
+            case "SLIDER2":
+                slider2 = int.Parse(value);
+                break;
+            case "LEFT":
+                break;
+            case "RIGHT":
+                break;
+        }
+
     }
 
     public void displayControllerInfo()
@@ -40,13 +57,8 @@ public class CircuitManager : MonoBehaviour
     }
 
     //talks to controller on what output to send
-    public outPacket sendResult()
+    public void sendResult()
     {
-        outPacket a = new outPacket();
-        a.dial1 = dial1;
-        a.dial2 = dial2;
-        a.slider1 = slider1;
-        a.slider2 = slider2;
-        return a;
+        
     }
 }

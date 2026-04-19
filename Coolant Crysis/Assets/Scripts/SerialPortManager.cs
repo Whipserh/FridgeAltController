@@ -18,7 +18,7 @@ public class InputCommand
 public class SerialPortManager : MonoBehaviour
 {
     [Header("Robot Object")]
-    [SerializeField] private GameManager bot;
+    [SerializeField] private CircuitManager bot;
 
     [Header("Serial Port Settings")]
     [SerializeField] private string portName = "COM3";
@@ -55,28 +55,8 @@ public class SerialPortManager : MonoBehaviour
                     continue;//not readable JSON, so move to next line
 
 
-                bot.ProcessInput(rxCommand.command);
-                /*
-                switch (rxCommand.command)
-                {
-                    case "LEFT":
-                        if (rxCommand.state == "DOWN")
-                            Debug.Log("<color=yellow><size=16>Receieved Command from arduino pin: left DOWN!</size></color>");
-                        else
-                            Debug.Log("<color=yellow><size=16>Receieved Command from arduino pin: left UP!</size></color>");
-                        break;
-                    case "RIGHT":
-                        if (rxCommand.state == "DOWN")
-                            Debug.Log("<color=green><size=16>Receieved Command from arduino pin: right down!</size></color>");
-                        else Debug.Log("<color=green><size=16>Receieved Command from arduino pin: right up!</size></color>");
-                        break;
-                    case "JUMP":
-                        if (rxCommand.state == "DOWN")
-                            Debug.Log("<color=red><size=16>Receieved Command from arduino pin: jump Down!</size></color>");
-                        else
-                            Debug.Log("<color=red><size=16>Receieved Command from arduino pin: jump UP!</size></color>");
-                        break;
-                }*/
+                bot.updateValues(rxCommand.command, rxCommand.state);
+                
             }
             catch (ArgumentException) { Debug.Log("Found an invald command in the queue line"); }
             
