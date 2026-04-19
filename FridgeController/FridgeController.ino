@@ -102,6 +102,27 @@ void controlMotorSpeed(int motorSpeed) {
 
 //DONE
 void sendDataPacket() {
+  //-----------------------------------------------------------------------------CIRCUIT DIALS
+  if(previousPotVal != potVal){
+    Serial.print("{\"command\":\"POT1\", \"state\":\"");
+    Serial.print(potVal);
+    Serial.println("\"}"); 
+  }
+  if(previousPot2Val != pot2Val){
+    Serial.print("{\"command\":\"POT2\", \"state\":\"");
+    Serial.print(pot2Val);
+    Serial.println("\"}"); 
+  }
+  if(previousSliderVal != sliderVal){
+    Serial.print("{\"command\":\"SLIDER1\", \"state\":\"");
+    Serial.print(sliderVal);
+    Serial.println("\"}"); 
+  }
+  if(previousSlider2Val != slider2Val){
+    Serial.print("{\"command\":\"POT1\", \"state\":\"");
+    Serial.print(slider2Val);
+    Serial.println("\"}"); 
+  }
   //-----------------------------------------------------------------------------FAN BUTTONS
   //if the state of the button changes then send an info update
   if(previousLeftSwitchState != leftSwitchState)
@@ -114,23 +135,7 @@ void sendDataPacket() {
         Serial.println("{\"command\":\"LEFT\", \"state\":\"DOWN\"}");
       else 
         Serial.println("{\"command\":\"LEFT\", \"state\":\"UP\"}"); 
-  //-----------------------------------------------------------------------------CIRCUIT DIALS
-  if(previousPotVal != potVal)
-    Serial.print("{\"command\":\"POT1\", \"state\":\"");
-    Serial.print(potVal);
-    Serial.println("\"}"); 
-  if(previousPot2Val != pot2Val)
-    Serial.print("{\"command\":\"POT2\", \"state\":\"");
-    Serial.print(pot2Val);
-    Serial.println("\"}"); 
-  if(previousSliderVal != sliderVal)
-    Serial.print("{\"command\":\"SLIDER1\", \"state\":\"");
-    Serial.print(sliderVal);
-    Serial.println("\"}"); 
-  if(previousSlider2Val != slider2Val)
-    Serial.print("{\"command\":\"POT1\", \"state\":\"");
-    Serial.print(slider2Val);
-    Serial.println("\"}"); 
+
 }
 
 //DONE
@@ -191,12 +196,12 @@ void loop() {
   //read curcuit board inputs
   readCircuitInput();
 
-  //collect the variables from the board and send it to unity
-  sendDataPacket();
+
 
   //recieve the data packet that was sent from the unity
   readDataPacket();
-  
+  //collect the variables from the board and send it to unity
+  sendDataPacket();
 
   //------------------------------------------------------------------------------------OUTPUT
   //update thermometer
@@ -208,7 +213,7 @@ void loop() {
   //update Fan turner controls
   fanServo.write(fanAngle);  
   //------------------------------------------------------------------------------------
-  
+  updatePreviousVariables();
 }  //end loop
 
 

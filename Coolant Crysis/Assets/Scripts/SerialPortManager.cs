@@ -59,8 +59,12 @@ public class SerialPortManager : MonoBehaviour
                 
             }
             catch (ArgumentException) { Debug.Log("Found an invald command in the queue line"); }
-            
         }
+    }
+
+    public void sendMessage(string line)
+    {
+        port.Write(line);
     }
 
     private void OnDisable()

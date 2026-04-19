@@ -11,20 +11,23 @@ public class CircuitManager : MonoBehaviour
     public TextMeshProUGUI dial1TXT, dial2TXT, slider1TXT, slider2TXT, leftTxt, rightTxt;
     public float dial1, dial2, slider1, slider2;
     public bool left, right;
-    public float fanPower, fanAngle, thermometerAngle;
+    private float fanPower, fanAngle, thermometerAngle;
     public SerialPortManager serialPortManager;
-
+    public float newTA=0, newFA=0, newFP=0;
     void Update()
     {
-
+        thermometerAngle = newTA;
+        fanAngle = newFA;
+        fanPower = newFP;
         sendResult();
         displayControllerInfo();
     }
     
 
-    //TODO
+    //DONE
     public void updateValues(string command, string value)
     {
+        Debug.Log("I'm reading inpupt");
         switch (command) {
             case "POT1":
                 dial1 = int.Parse(value);
@@ -39,8 +42,10 @@ public class CircuitManager : MonoBehaviour
                 slider2 = int.Parse(value);
                 break;
             case "LEFT":
+                left = value.Equals("UP");
                 break;
             case "RIGHT":
+                right = value.Equals("UP");
                 break;
         }
 
@@ -59,6 +64,10 @@ public class CircuitManager : MonoBehaviour
     //talks to controller on what output to send
     public void sendResult()
     {
-        
+        if (thermometerAngle!=newTA || fanAngle!=newFA || fanPower != newFP)
+            serialPortManager.sendMessage(thermometerAngle+","+fanAngle+","+fanPower);
+        thermometerAngle = newTA;
+        fanAngle = newFA;
+        fanPower = newFP;
     }
 }
