@@ -75,14 +75,14 @@ void setup() {
   pinMode(enablePin, OUTPUT);
 
   //set the motor to Off
-  digitalWrite(enablePin, LOW);
+  digitalWrite(enablePin, HIGH);
   //set the direction of the motor
   digitalWrite(controlPin1, HIGH);
   digitalWrite(controlPin2, LOW);
 
   //comunicate to unity project
   Serial.begin(115200);
-  
+  //motorEnabled=1;
 
 }
 
@@ -127,14 +127,14 @@ void sendDataPacket() {
   //if the state of the button changes then send an info update
   if(previousLeftSwitchState != leftSwitchState)
     if(leftSwitchState == LOW)
-        Serial.println("{\"command\":\"LEFT\", \"state\":\"DOWN\"}");
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"UP\"}");
       else 
-        Serial.println("{\"command\":\"LEFT\", \"state\":\"UP\"}"); 
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"DOWN\"}"); 
   if(previousRightSwitchState != rightSwitchState)
       if(rightSwitchState == LOW)
-        Serial.println("{\"command\":\"LEFT\", \"state\":\"DOWN\"}");
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"UP\"}");
       else 
-        Serial.println("{\"command\":\"LEFT\", \"state\":\"UP\"}"); 
+        Serial.println("{\"command\":\"LEFT\", \"state\":\"DOWN\"}"); 
 
 }
 
@@ -151,7 +151,7 @@ void readDataPacket() {
   if(line.equals("")) return; //if there is nothing there then don't update the variables
 
   //seperate the first number from the rest of the string
-  thermometerVal = atoi(line.substring(0, line.indexOf(',')).c_str());
+  thermometerAngle = atoi(line.substring(0, line.indexOf(',')).c_str());
   line = line.substring(line.indexOf(',')+1);
 
   //get the second number from the list
@@ -161,7 +161,7 @@ void readDataPacket() {
 
   motorSpeed = atoi(line.c_str());
 
-  Serial.println(thermometerVal);
+  Serial.println(thermometerAngle);
   Serial.println(fanAngle);
   Serial.println(motorSpeed);
 }
